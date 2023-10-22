@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <h:outputStylesheet library="css" name="style.css"/>
+    <title>Главная</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"></link>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+</h:head>
+
+<h:body>
+    <div class="header">
+        <h2>Рубин Михаил Дмитриевич, P3211, Вариант 4132</h2>
+    </div>
+
+    <p>
+        <h:link styleClass="clock index-menu_link" outcome="goToIndex">
+            В начало
+        </h:link>
+    </p>
+    <p id="graphicInfo" class="rightInfo">
+        График нарисован для значения R: #{rowBean.r}
+    </p>
+
+    <div class="wrapper">
+        <div class="left_column">
+            <h:form>
+                <div class="x_choose">
+                    <p>Выберите значение x</p>
+                    <h:commandLink styleClass="a-button a-button-usual-color" disabled="true">
+                        <h:outputText value="-2"/>
+                    </h:commandLink>
+                    <h:commandLink styleClass="a-button a-button-usual-color" disabled="true">
+                        <h:outputText value="-1.5"/>
+                    </h:commandLink>
+                    <h:commandLink styleClass="a-button a-button-usual-color" disabled="true">
+                        <h:outputText value="-1"/>
+                    </h:commandLink>
+                    <h:commandLink styleClass="a-button a-button-usual-color" disabled="true">
+                        <h:outputText value="-0.5"/>
+                    </h:commandLink>
+                    <h:commandLink styleClass="a-button a-button-usual-color" disabled="true">
+                        <h:outputText value="0"/>
+                    </h:commandLink>
+                    <h:commandLink styleClass="a-button a-button-usual-color" disabled="true">
+                        <h:outputText value="0.5"/>
+                    </h:commandLink>
+                    <h:commandLink styleClass="a-button a-button-usual-color" disabled="true">
+                        <h:outputText value="1"/>
+                    </h:commandLink>
+                    <h:commandLink styleClass="a-button a-button-usual-color" disabled="true">
+                        <h:outputText value="1.5"/>
+                    </h:commandLink>
+                    <h:commandLink styleClass="a-button a-button-usual-color" disabled="true">
+                        <h:outputText value="2"/>
+                    </h:commandLink>
+
+                    <h:inputHidden id="xValue" value="#{rowBean.x}" validatorMessage="X не выбран">
+                        <f:validateRequired/>
+                    </h:inputHidden>
+                    <h:message for="xValue" id="xMessage" style="color:red"/>
+
+
+                </div>
+                <div class="y_choose">
+                    <label>
+                        Введите значение y <br/>
+                        <h:inputText styleClass="form__input" id="y-text"
+                                     autocomplete="off" a:placeholder="Число от -3 до 3"
+                                     value="#{rowBean.y}" validatorMessage="Некорректный y">
+                            <f:validateRequired/>
+                            <f:validateDoubleRange minimum="-3" maximum="3"/>
+                        </h:inputText>
+                        <br/>
+                        <h:message for="y-text" id="yMessage" style="color:red"/>
+                        <!--                        <input type="text" name="y_text" id="y_input" placeholder="-5..3">-->
+                    </label>
+                    <br/>
+                </div>
+
+                <div class="x_choose">
+                    <p>Выберите значение R</p>
+                    <div id="rSlider" class="slider_style">
+                        <h:inputHidden id="number" value="#{rowBean.r}"/>
+                        <h:outputText id="output" styleClass="displayR" value="#{rowBean.r}"/>
+                        <p:slider for="number" display="output"
+                                  style="background-color: #7FBF7F; margin-left: 10px; margin-top: 10px"
+                                  minValue="1" maxValue="4" step="0.25"/>
+
+
+                    </div>
+
+
+                </div>
+                <h:commandButton id="submit_button" type="submit" styleClass="check submit_button"
+                                 action="#{rowBean.add}" value="Отправить"/>
+            </h:form>
+
+            <!--            <p><input class="check" id="check_button" type="submit" value="Проверить"></p>-->
+
+        </div>
+
+        <div class="images">
+            <div class="chart">
+                <canvas id="chart"/>
+            </div>
+            <!--        <img id="lebron" src="images/lebron.png" alt="">-->
+        </div>
+
+    </div>
+
+
+    <div id="tableStore">
+        <table id="history_table">
+            <tr>
+                <th>x</th>
+                <th>y</th>
+                <th>R</th>
+                <th>Результат</th>
+                <th>Время</th>
+                <th>Время выполнения скрипта</th>
+            </tr>
+            <ui:repeat value="#{rowBean.getRows()}" var="item">
+                <tr>
+                    <td>#{item.x}</td>
+                    <td>#{item.y}</td>
+                    <td>#{item.r}</td>
+                    <td>#{item.isHit}</td>
+                    <td>#{item.currentTime}</td>
+                    <td>#{item.executionTime}</td>
+                </tr>
+            </ui:repeat>
+        </table>
+        <h:form>
+            <h:commandButton id="clear_button" styleClass="check clear_button" type="submit" action="#{rowBean.clear}"
+                             value="Очистить"/>
+        </h:form>
+
+    </div>
+
+    <h:form>
+        <h:inputHidden id="xHiddenValue" value="#{rowBean.x}"></h:inputHidden>
+        <h:inputHidden id="yHiddenValue" value="#{rowBean.y}"></h:inputHidden>
+        <h:inputHidden id="RHiddenValue" value="#{rowBean.r}"></h:inputHidden>
+        <h:commandButton id="submitHidden" type="submit" style="visibility: hidden"
+                         action="#{rowBean.add}" value="Отправить"/>
+
+    </h:form>
+
+    <h:outputScript library="js" name="script.js"/>
+    <h:outputScript library="js" name="canvasHandler.js"/>
+
+
+</h:body>
+</html>
