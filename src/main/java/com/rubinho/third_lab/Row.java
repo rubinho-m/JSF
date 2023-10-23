@@ -8,20 +8,18 @@ import java.util.List;
 
 public class Row {
     private float R;
+    private final DatabaseHandler databaseHandler = new DatabaseHandler();
     private boolean YInitialized = false;
     private String x;
     private String y;
 
-    private List<EntityRow> rows = new ArrayList<>();
+//    private List<EntityRow> rows = new ArrayList<>();
 
-    public List<EntityRow> getRows() {
-        System.out.println(rows);
-        return rows;
+    public List<Result> getRows() {
+        return databaseHandler.getAll();
     }
 
-    public void setRows(List<EntityRow> rows) {
-        this.rows = rows;
-    }
+
 
     public boolean isYInitialized() {
         return YInitialized;
@@ -58,15 +56,14 @@ public class Row {
     }
 
     public void clear() {
-        rows.clear();
+//        rows.clear();
+        databaseHandler.clear();
         System.out.println("Cleared");
     }
 
     public void add() {
         long startTime = System.nanoTime();
-        System.out.println(R);
-        System.out.println(y);
-        System.out.println(x);
+
 
         LocalDateTime currentDateTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
@@ -75,9 +72,12 @@ public class Row {
         String msTime = String.format("%.6f", ((System.nanoTime() - startTime) / 1_000_000.0)).replace(',', '.');
 
         boolean isHit = check(Float.parseFloat(x), Float.parseFloat(y), R);
-        EntityRow newRow = new EntityRow(x, y, String.valueOf(R), formattedDateTime, msTime, String.valueOf(isHit));
-        rows.add(new EntityRow(x, y, String.valueOf(R), formattedDateTime, msTime, String.valueOf(isHit)));
-        System.out.println("Added");
+//        EntityRow newRow = new EntityRow(x, y, String.valueOf(R), formattedDateTime, msTime, String.valueOf(isHit));
+//        rows.add(new EntityRow(x, y, String.valueOf(R), formattedDateTime, msTime, String.valueOf(isHit)));
+
+        Result newRow = databaseHandler.createRow(x, y, String.valueOf(R), formattedDateTime, msTime, String.valueOf(isHit));
+        databaseHandler.add(newRow);
+
 
     }
 
