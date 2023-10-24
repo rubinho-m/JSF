@@ -12,17 +12,17 @@ public class Result implements Serializable {
     @Column(name = "id")
     private long id;
     @Column(name = "x")
-    private String x;
+    private float x;
     @Column(name = "y")
-    private String y;
+    private float y;
     @Column(name = "R")
-    private String R;
+    private float R;
     @Column(name = "currentTime")
     private String currentTime;
     @Column(name = "executionTime")
     private String executionTime;
     @Column(name = "isHit")
-    private String isHit;
+    private boolean isHit;
 
     public long getId() {
         return id;
@@ -32,27 +32,27 @@ public class Result implements Serializable {
         this.id = id;
     }
 
-    public String getX() {
+    public float getX() {
         return x;
     }
 
-    public void setX(String x) {
+    public void setX(float x) {
         this.x = x;
     }
 
-    public String getY() {
+    public float getY() {
         return y;
     }
 
-    public void setY(String y) {
+    public void setY(float y) {
         this.y = y;
     }
 
-    public String getR() {
+    public float getR() {
         return R;
     }
 
-    public void setR(String r) {
+    public void setR(float r) {
         R = r;
     }
 
@@ -72,11 +72,11 @@ public class Result implements Serializable {
         this.executionTime = executionTime;
     }
 
-    public String getIsHit() {
+    public boolean getIsHit() {
         return isHit;
     }
 
-    public void setIsHit(String isHit) {
+    public void setIsHit(boolean isHit) {
         this.isHit = isHit;
     }
 }

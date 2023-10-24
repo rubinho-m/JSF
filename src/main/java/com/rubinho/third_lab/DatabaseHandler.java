@@ -8,10 +8,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseHandler {
-    private final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("ResultUnit");
-    private final EntityManager entityManager = entityManagerFactory.createEntityManager();
+    private EntityManagerFactory entityManagerFactory;
+    private EntityManager entityManager;
 
-    public Result createRow(String x, String y, String R, String currentTime, String executionTime, String isHit) {
+    DatabaseHandler() {
+
+        entityManagerFactory = Persistence.createEntityManagerFactory("ResultUnit");
+        entityManager = entityManagerFactory.createEntityManager();
+
+    }
+
+
+    public Result createRow(float x, float y, float R, String currentTime, String executionTime, boolean isHit) {
         Result result = new Result();
         result.setX(x);
         result.setY(y);
@@ -38,7 +46,6 @@ public class DatabaseHandler {
         EntityTransaction transaction = entityManager.getTransaction();
 
 
-
         transaction.begin();
         entityManager.createQuery("delete from Result").executeUpdate();
         transaction.commit();
@@ -46,7 +53,7 @@ public class DatabaseHandler {
 
     }
 
-    public List<Result> getAll(){
+    public List<Result> getAll() {
         return entityManager.createQuery("select p from Result p ORDER BY p.id DESC", Result.class).getResultList();
     }
 }

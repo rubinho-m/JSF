@@ -17,8 +17,8 @@ public class Row {
 
     public List<Result> getRows() {
         return databaseHandler.getAll();
-    }
 
+    }
 
 
     public boolean isYInitialized() {
@@ -58,7 +58,7 @@ public class Row {
     public void clear() {
 //        rows.clear();
         databaseHandler.clear();
-        System.out.println("Cleared");
+//        System.out.println("Cleared");
     }
 
     public void add() {
@@ -75,7 +75,7 @@ public class Row {
 //        EntityRow newRow = new EntityRow(x, y, String.valueOf(R), formattedDateTime, msTime, String.valueOf(isHit));
 //        rows.add(new EntityRow(x, y, String.valueOf(R), formattedDateTime, msTime, String.valueOf(isHit)));
 
-        Result newRow = databaseHandler.createRow(x, y, String.valueOf(R), formattedDateTime, msTime, String.valueOf(isHit));
+        Result newRow = databaseHandler.createRow(Float.parseFloat(x), Float.parseFloat(y), R, formattedDateTime, msTime, isHit);
         databaseHandler.add(newRow);
 
 
