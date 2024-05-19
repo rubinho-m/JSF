@@ -1,9 +1,16 @@
 package com.rubinho.third_lab;
 
 
+import com.rubinho.third_lab.mbeans.Counter;
+import com.rubinho.third_lab.mbeans.CounterMXBean;
+import com.rubinho.third_lab.mbeans.Statistics;
+import com.rubinho.third_lab.mbeans.StatisticsMXBean;
+
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+import java.lang.management.ManagementFactory;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Row {
@@ -12,8 +19,24 @@ public class Row {
     private boolean YInitialized = false;
     private String x;
     private String y;
+    private MBeanServer mbs;
+    CounterMXBean counterMXBean;
+    StatisticsMXBean statisticsMXBean;
 
-//    private List<EntityRow> rows = new ArrayList<>();
+    public Row() {
+        this.mbs = ManagementFactory.getPlatformMBeanServer();
+        this.counterMXBean = new Counter();
+        this.statisticsMXBean = new Statistics();
+
+        try {
+            ObjectName counterName = new ObjectName("com.rubinho.third_lab.mbeans:type=Counter");
+            ObjectName statisticsName = new ObjectName("com.rubinho.third_lab.mbeans:type=Statistics");
+            mbs.registerMBean(counterMXBean, counterName);
+            mbs.registerMBean(statisticsMXBean, statisticsName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public List<Result> getRows() {
         return databaseHandler.getAll();
@@ -56,9 +79,7 @@ public class Row {
     }
 
     public void clear() {
-//        rows.clear();
         databaseHandler.clear();
-//        System.out.println("Cleared");
     }
 
     public void add() {
@@ -72,12 +93,19 @@ public class Row {
         String msTime = String.format("%.6f", ((System.nanoTime() - startTime) / 1_000_000.0)).replace(',', '.');
 
         boolean isHit = check(Float.parseFloat(x), Float.parseFloat(y), R);
-//        EntityRow newRow = new EntityRow(x, y, String.valueOf(R), formattedDateTime, msTime, String.valueOf(isHit));
-//        rows.add(new EntityRow(x, y, String.valueOf(R), formattedDateTime, msTime, String.valueOf(isHit)));
+
+        resultMBeansHandle(Float.parseFloat(x), Float.parseFloat(y), R, isHit);
 
         Result newRow = databaseHandler.createRow(Float.parseFloat(x), Float.parseFloat(y), R, formattedDateTime, msTime, isHit);
         databaseHandler.add(newRow);
 
+
+    }
+
+    private void resultMBeansHandle(float x, float y, float R, boolean isHit) {
+        counterMXBean.hitsInc(x, y, R);
+        if (!isHit) counterMXBean.missedHitsInc();
+        statisticsMXBean.calculateProportion(counterMXBean.getHitsCount(), counterMXBean.getMissedHitsCount());
 
     }
 
